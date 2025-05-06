@@ -26,7 +26,7 @@ public:
 	// Reveal In Blueprint
 	UPROPERTY(EditAnywhere, Category = "Moving")
 	FVector PlatformVelocity = FVector(100, 0 , 0);
-	UPROPERTY(EditAnywhere, Category="Moving Platform")
+	UPROPERTY(EditAnywhere, Category = "Moving")
 	float MoveDistance = 400;
 
 	// disappear blueprint
