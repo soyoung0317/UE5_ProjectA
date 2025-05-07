@@ -17,6 +17,10 @@ void AMovingPlatform::BeginPlay()
 	Super::BeginPlay();
 
 	StartLocation = GetActorLocation();
+
+	FString Name = GetName();
+
+	UE_LOG(LogTemp, Display, TEXT("BeginPlay: %s"), *Name);
 }
 
 // Called every frame
@@ -24,27 +28,42 @@ void AMovingPlatform::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// Get current location
-	FVector CurrentLocation = GetActorLocation();
-	
-	// Add vector to that location
-	CurrentLocation = CurrentLocation + (PlatformVelocity * DeltaTime);
-	
-	// Set the location
-	SetActorLocation(CurrentLocation);
+	MovePlatform(DeltaTime);
+	RotatePlatform(DeltaTime);
+}
 
-	// Send platform back if gone too far
-	// Check how far we've moved
-	float DistanceMoved = FVector::Dist(StartLocation, CurrentLocation);
 
-	// Reverse direction of motion if gone too far
-	if (DistanceMoved > MoveDistance)
+void AMovingPlatform::MovePlatform(float DeltaTime)
+{
+	if (ShouldPlatformReturn())
 	{
+		// 법선벡터가 가리키는 방향에 거리만큼 더한값으로 새로운 location으로 하고, 속도를 반대로 변경  
+		// 방향은 블루프린트에서 지정하고, 오브젝트의 mesh역시 블루프린트에서 지정할예정이므로, 통합적으로 사용할 수 있도록 법선벡터와 FVector를 통해 모두 커버한것
 		FVector MoveDirection = PlatformVelocity.GetSafeNormal();
 		StartLocation = StartLocation + MoveDirection * MoveDistance;
 		SetActorLocation(StartLocation);
 		PlatformVelocity = -PlatformVelocity;
 	}
+	else
+	{
+		FVector CurrentLocation = GetActorLocation();
+		CurrentLocation = CurrentLocation + (PlatformVelocity * DeltaTime);
+		SetActorLocation(CurrentLocation);
+	}
+}
+
+void AMovingPlatform::RotatePlatform(float DeltaTime)
+{
+	UE_LOG(LogTemp, Display, TEXT("%s Rotating..."), *GetName());
 }
 
 
+bool AMovingPlatform::ShouldPlatformReturn() const
+{
+	return GetDistanceMoved() > MoveDistance;
+}
+
+float AMovingPlatform::GetDistanceMoved() const
+{
+	return FVector::Dist(StartLocation, GetActorLocation());
+}

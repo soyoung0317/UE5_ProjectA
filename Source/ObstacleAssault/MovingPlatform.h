@@ -23,13 +23,18 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Reveal In Blueprint
-	UPROPERTY(EditAnywhere, Category = "Moving")
-	FVector PlatformVelocity = FVector(100, 0 , 0);
-	UPROPERTY(EditAnywhere, Category = "Moving")
-	float MoveDistance = 400;
+private:
+	UPROPERTY(EditAnywhere, Category="Moving Platform")
+	FVector PlatformVelocity = FVector(100, 0, 0);
+	UPROPERTY(EditAnywhere, Category="Moving Platform")
+	float MoveDistance = 100;
 
-	// disappear blueprint
 	FVector StartLocation;
+
+	void MovePlatform(float DeltaTime);
+	void RotatePlatform(float DeltaTime);
+
+	bool ShouldPlatformReturn() const;
+	float GetDistanceMoved() const;
 
 };
